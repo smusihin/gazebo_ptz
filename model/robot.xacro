@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="simple_robot">
+
+<!-- Here we define the model parameters  -->
+
+<!-- Geometry  -->
+
+<xacro:property name="base_link_length" value="0.5"/>
+<xacro:property name="base_link_radius" value="0.4"/>
+
+
+<!-- Include the Gazebo definitions  -->
+
+<xacro:include filename="$(find gazebo_ptz)/model/robot.gazebo" />
+
+  <material name="blue">
+    <color rgba="0 0 0.8 1"/>
+  </material>
+  <material name="black">
+    <color rgba="0 0 0 1"/>
+  </material>
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.1" radius="0.15"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.1" radius="0.15"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.00322" ixy="0.0" ixz="0.0" iyy="0.00322" iyz="0.0" izz="0.005625"/>
+    </inertial>
+    
+  </link>
+
+  <link name="head">
+    <visual>
+      <geometry>
+        <box size="0.2 0.2 0.4"/>
+      </geometry>      
+      <material name="white"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.2 0.2 0.4"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.01666" ixy="0.0" ixz="0.0" iyy="0.01666" iyz="0.0" izz="0.00666"/>
+    </inertial>
+  </link>
+
+  <joint name="pan" type="continuous">
+    <parent link="base_link"/>
+    <child link="head"/>
+    <axis xyz="0 0 1"/>
+    <origin xyz="0 0 0.25"/>
+  </joint>
+
+  <link name="tilt_support">
+    <visual>
+      <geometry>
+        <cylinder length="0.05" radius="0.02"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.05" radius="0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.25"/>
+      <inertia ixx="0.00008" ixy="0.0" ixz="0.0" iyy="0.00008" iyz="0.0" izz="0.00005"/>
+    </inertial>
+  </link>
+
+  <joint name="tilt" type="continuous">
+    <parent link="head"/>
+    <child link="tilt_support"/>
+    <axis xyz="0 0 1"/>
+    <origin xyz="0.125 0 0.1" rpy="0 1.5708 0"/>
+  </joint>
+
+  <link name="camera_box">
+    <visual>
+      <geometry>
+        <box size="0.1 0.3 0.1"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.1 0.3 0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.8"/>
+      <inertia ixx="0.00533" ixy="0.0" ixz="0.0" iyy="0.00533" iyz="0.0" izz="0.01333"/>
+    </inertial>
+  </link>
+
+  <joint name="tilt_support__camera_box" type="fixed">
+    <parent link="tilt_support"/>
+    <child link="camera_box"/>
+    <origin xyz="0 0 0.075"/>
+  </joint>
+
+  <link name="camera_link">
+    <visual>
+      <geometry>
+        <box size="0.03 0.03 0.03"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.03 0.03 0.03"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="camera_box__camera_link" type="fixed">
+    <parent link="camera_box"/>
+    <child link="camera_link"/>
+    <origin xyz="0 0.15 0" rpy="-1.5708 0 -1.5708"/>
+  </joint>
+
+</robot>
